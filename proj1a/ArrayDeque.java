@@ -66,9 +66,6 @@ public class ArrayDeque<T> {
         begin = (begin + 1) % items.length;
 
         radio = (double) size / items.length;
-        if (radio == 0) {
-            return null;
-        }
         if (radio <= 0.25) {
             shrink();
         }
@@ -85,9 +82,6 @@ public class ArrayDeque<T> {
         end = (end - 1 + items.length) % items.length;
 
         radio = (double) size / items.length;
-        if (radio == 0) {
-            return null;
-        }
         if (radio <= 0.25) {
             shrink();
         }
