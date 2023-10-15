@@ -96,11 +96,14 @@ public class ArrayDeque<T> {
         T[] newItems = (T[]) new Object[items.length * 2];
         if (begin <= end) {
             System.arraycopy(items, 0, newItems, 0, items.length);
+            begin = 0;
+            end = size;
             items = newItems;
             return;
         }
         System.arraycopy(items, 0, newItems, 0, end + 1);
         int rightLength = items.length - begin;
+        begin = newItems.length - rightLength;
         System.arraycopy(items, begin, newItems, newItems.length - rightLength - 1, rightLength);
     }
 
@@ -108,11 +111,16 @@ public class ArrayDeque<T> {
         T[] newItems = (T[]) new Object[items.length / 2];
         if (begin <= end) {
             System.arraycopy(items, begin, newItems, 0, size);
+            begin = 0;
+            end = size;
             items = newItems;
             return;
         }
+
         System.arraycopy(items, begin, newItems, 0, items.length - begin);
         System.arraycopy(items, end, newItems, items.length - begin, end + 1);
+        begin = 0;
+        end = items.length;
         items = newItems;
     }
 }
