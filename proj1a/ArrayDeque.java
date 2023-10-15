@@ -125,10 +125,5 @@ public class ArrayDeque<T> {
         end = items.length;
         items = newItems;
     }
-    public static void main(String[] args){
-        ArrayDeque<Integer> arr = new ArrayDeque<>();
-        arr.addFirst(1);
-        arr.addFirst(4);
-        arr.addFirst(3);
-    }
+
 }
