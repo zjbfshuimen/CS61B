@@ -1,129 +1,159 @@
+/**
+ *
+ * array based double end queue
+ * @param <T>
+ */
 public class ArrayDeque<T> {
+    /** the size of the queue*/
     private int size;
+    /** the size of the array*/
+    private int capacity;
     private int begin, end;
     private T[] items;
     private double radio;
-
     public ArrayDeque() {
         items = (T[]) new Object[8];
+        capacity = 8;
         size = 0;
-        begin = 0;
-        end = 0;
+        begin = 3;
+        end = 3;
     }
 
+    /**
+     * The two function is used to calculate the front and the last
+     * in case they are at boundaries
+     */
+    private int minusOne(int i) {
+        if (i == 0) {
+            return capacity - 1;
+        }
+        return i - 1;
+    }
+    private int plusOne(int i) {
+        if (i == capacity - 1) {
+            return 0;
+        }
+        return i + 1;
+    }
     public void addFirst(T x) {
-        size++;
-        if (begin == end) {
-            items[begin] = x;
-            return;
+        if (size == capacity) {
+            grow();
         }
-        if (((begin - 1 + items.length) % items.length) == end) {
-            recap();
-        }
-        begin = (begin - 1 + items.length) % items.length;
+        begin = minusOne(begin);
         items[begin] = x;
+        size++;
     }
     public void addLast(T x) {
-        size++;
-        if (begin == end) {
-            items[end] = x;
-            return;
+        if (size == capacity) {
+            grow();
         }
-        if ((end + 1) % items.length == begin) {
-            recap();
-        }
-        end = (end + 1) % items.length;
+        end = plusOne(end);
         items[end] = x;
-
+        size++;
     }
     public boolean isEmpty() {
-        if (size == 0) {
-            return true;
-        }
-        return false;
+        return size == 0;
     }
 
     public int size() {
         return size;
     }
 
-    public void printDeque() {
-        if (size != 0) {
-            int i;
-            for (i = begin; i != end; i = (i + 1) % items.length) {
-                System.out.print(items[i] + " ");
-            }
-            System.out.print(items[i] + " ");
-        }
-
-
-    }
     public T removeFirst() {
         if (size == 0) {
             return null;
         }
-        size--;
-        T x = items[begin];
-        items[begin] = null;
-        begin = (begin + 1) % items.length;
+        T toreturn = items[begin];
 
-        radio = (double) size / items.length;
-        if (radio <= 0.25) {
+        items[begin] = null;
+        begin = plusOne(begin);
+        size--;
+
+        radio = (double) size / capacity;
+        if (capacity >= 8 && radio <= 0.25) {
             shrink();
         }
-
-        return x;
+        return toreturn;
     }
     public T removeLast() {
         if (size == 0) {
             return null;
         }
-        size--;
-        T x = items[end];
-        items[end] = null;
-        end = (end - 1 + items.length) % items.length;
+        T toreturn = items[end];
 
-        radio = (double) size / items.length;
-        if (radio <= 0.25) {
+        items[end] = null;
+        end = minusOne(end);
+        size--;
+
+        radio = (double) size / capacity;
+        if (capacity >= 8 && radio <= 0.25) {
             shrink();
         }
-        return x;
-    }
-    public T get(int index) {
-        int i = (begin + index) % items.length;
-        return items[i];
+        return toreturn;
     }
 
-    private void recap() {
-        T[] newItems = (T[]) new Object[items.length * 2];
-        if (begin <= end) {
-            System.arraycopy(items, 0, newItems, 0, items.length);
-            begin = 0;
-            end = size;
-            items = newItems;
-            return;
+    /**
+     *
+     */
+    public T get(int i) {
+        if (i >= size) {
+            return null;
         }
-        System.arraycopy(items, 0, newItems, 0, end + 1);
-        int rightLength = items.length - begin;
-        begin = newItems.length - rightLength;
-        System.arraycopy(items, begin, newItems, newItems.length - rightLength - 1, rightLength);
+        int p = begin;
+        for (int k = 0; k < i; k++) {
+            p = plusOne(p);
+        }
+        return items[p];
     }
 
-    private void shrink() {
-        T[] newItems = (T[]) new Object[items.length / 2];
-        if (begin <= end) {
-            System.arraycopy(items, begin, newItems, 0, size);
-            begin = 0;
-            end = size;
-            items = newItems;
-            return;
+    /**
+     * Print the deque from begin to end
+     */
+    public void printDeque() {
+        int p = begin;
+        while (p != end && items[p] != null) {
+            System.out.print(items[p] + " ");
+            p = plusOne(p);
+        }
+        if (items[p] != null) {
+            System.out.print(items[p] + " ");
+        }
+    }
+
+    /**
+     * This method change the capacity of array container to double size
+     * and copy the items from begin to end to 0 to size - 1
+     */
+    private void grow() {
+        T[] newItems = (T[]) new Object[capacity * 2];
+        int p = begin;
+        int i;
+        for (i = 0; i <= size; i++) {
+            newItems[i] = items[p];
+            p = plusOne(p);
         }
 
-        System.arraycopy(items, begin, newItems, 0, items.length - begin);
-        System.arraycopy(items, end, newItems, items.length - begin, end + 1);
         begin = 0;
-        end = items.length;
+        end = size - 1;
         items = newItems;
+        capacity *= 2;
     }
 
+    /**
+     * if the usage percent of array is less than 0.25 and the array is larger than 16
+     * This method change the capacity of the array to its half
+     */
+    private void shrink() {
+        T[] newItems = (T[]) new Object[capacity / 2];
+        int p = begin;
+        int i;
+        for (i = 0; i <= size; i++) {
+            newItems[i] = items[p];
+            p = plusOne(p);
+        }
+        begin = 0;
+        end = size - 1;
+        items = newItems;
+        capacity /= 2;
+    }
 }
