@@ -15,6 +15,7 @@ public class ArrayDeque<T> {
         size++;
         if (begin == end) {
             items[begin] = x;
+            return;
         }
         if (((begin - 1 + items.length) % items.length) == end) {
             recap();
@@ -26,6 +27,7 @@ public class ArrayDeque<T> {
         size++;
         if (begin == end) {
             items[end] = x;
+            return;
         }
         if ((end + 1) % items.length == begin) {
             recap();
@@ -122,5 +124,11 @@ public class ArrayDeque<T> {
         begin = 0;
         end = items.length;
         items = newItems;
+    }
+    public static void main(String[] args){
+        ArrayDeque<Integer> arr = new ArrayDeque<>();
+        arr.addFirst(1);
+        arr.addFirst(4);
+        arr.addFirst(3);
     }
 }
