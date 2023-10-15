@@ -1,5 +1,4 @@
 public class ArrayDeque<T> {
-
     private int size;
     private int begin, end;
     private T[] items;
@@ -99,7 +98,7 @@ public class ArrayDeque<T> {
         return items[i];
     }
 
-    public void recap() {
+    private void recap() {
         T[] newItems = (T[]) new Object[items.length * 2];
         if (begin <= end) {
             System.arraycopy(items, 0, newItems, 0, items.length);
@@ -111,7 +110,7 @@ public class ArrayDeque<T> {
         System.arraycopy(items, begin, newItems, newItems.length - rightLength - 1, rightLength);
     }
 
-    public void shrink() {
+    private void shrink() {
         T[] newItems = (T[]) new Object[items.length / 2];
         if (begin <= end) {
             System.arraycopy(items, begin, newItems, 0, size);
