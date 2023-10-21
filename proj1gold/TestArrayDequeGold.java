@@ -28,6 +28,7 @@ public class TestArrayDequeGold {
         }
 
 
+        // random process to call the methods
         while (true) {
             int randomNumber = StdRandom.discrete(randomBox);
             switch (randomNumber) {
@@ -59,7 +60,7 @@ public class TestArrayDequeGold {
                     usedMethod.add(1);
                     errorString += "addFirst(" + i + ")\n";
                     usedMethod.add(2);
-                    errorString += "addFirst(" + (i+1) + ")\n";
+                    errorString += "addFirst(" + (i + 1) + ")\n";
                     actems.addFirst(i);
                     actems.addLast(i + 1);
 
