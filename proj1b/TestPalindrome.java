@@ -26,7 +26,7 @@ public class TestPalindrome {
     }
 
     @Test
-    public void testIsPalindromeAndcc(){
+    public void testIsPalindromeAndcc() {
         OffByOne obo = new OffByOne();
         assertTrue(palindrome.isPalindrome("", obo));
         assertTrue(palindrome.isPalindrome("a", obo));
