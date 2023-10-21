@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestArrayDequeGold {
+    private String errorString = "";
     private final int outtime = 3000;
     @Test(timeout = outtime)
     public void testfirst() {
@@ -23,6 +24,7 @@ public class TestArrayDequeGold {
             items.addFirst(i);
             actems.addFirst(i);
             usedMethod.add(1);
+            errorString += "addFirst(" + i + ")\n";
         }
 
 
@@ -31,19 +33,23 @@ public class TestArrayDequeGold {
             switch (randomNumber) {
                 case 0:
                     usedMethod.add(4);
-                    assertEquals(errorCausedRank(usedMethod),
+                    errorString += "removeLast()\n";
+                    assertEquals(errorString,
                             items.removeLast(), actems.removeLast());
                     break;
                 case 1:
                     usedMethod.add(5);
+                    errorString += "size()\n";
                     if (items.size() != 0 && actems.size() != 0) {
                         usedMethod.add(1);
-                        assertEquals(errorCausedRank(usedMethod),
+                        errorString += "removeFirst()\n";
+                        assertEquals(errorString,
                             items.removeFirst(), actems.removeFirst());
                     }
                     break;
                 case 2:
                     usedMethod.add(5);
+                    errorString += "size()\n";
                     assertEquals(items.size(), actems.size());
                     break;
                 default:
@@ -51,14 +57,18 @@ public class TestArrayDequeGold {
                     items.addFirst(i);
                     items.addLast(i + 1);
                     usedMethod.add(1);
+                    errorString += "addFirst(" + i + ")\n";
                     usedMethod.add(2);
+                    errorString += "addFirst(" + (i+1) + ")\n";
                     actems.addFirst(i);
                     actems.addLast(i + 1);
 
                     usedMethod.add(5);
+                    errorString += "size()\n";
                     if (items.size() != 0 && actems.size() != 0) {
                         usedMethod.add(3);
-                        assertEquals(errorCausedRank(usedMethod),
+                        errorString += "removeFirst()\n";
+                        assertEquals(errorString,
                             items.removeFirst(), actems.removeFirst());
                     }
             }
