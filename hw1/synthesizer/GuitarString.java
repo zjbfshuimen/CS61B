@@ -21,6 +21,9 @@ public class GuitarString {
         //       cast the result of this divsion operation into an int. For better
         //       accuracy, use the Math.round() function before casting.
         //       Your buffer should be initially filled with zeros.
+        for (int i = 0; i < buffer.capacity(); i++) {
+            buffer.enqueue(0.0);
+        }
     }
 
 
