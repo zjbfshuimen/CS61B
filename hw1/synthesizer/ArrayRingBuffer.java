@@ -1,10 +1,7 @@
-// TODO: Make sure to make this class a part of the synthesizer package
 // package <package name>;
 package synthesizer;
 import java.util.Iterator;
 
-//TODO: Make sure to make this class and all of its methods public
-//TODO: Make sure to make this class extend AbstractBoundedQueue<t>
 public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
     /* Index for the next dequeue or peek. */
     private int first;
@@ -18,7 +15,6 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
      * Create a new ArrayRingBuffer with the given capacity.
      */
     public ArrayRingBuffer(int capacity) {
-        // TODO: Create new array with capacity elements.
         rb = (T[]) new Object[capacity];
         //       first, last, and fillCount should all be set to 0.
         first = 0;
@@ -37,7 +33,6 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
      */
     @Override
     public void enqueue(T x) {
-        // TODO: Enqueue the item. Don't forget to increase fillCount and update last.
         if (isFull()) {
             throw new RuntimeException("Ring buffer overflow");
         }
@@ -67,11 +62,9 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
      * Return oldest item, but don't remove it.
      */
     public T peek() {
-        // TODO: Return the first item. None of your instance variables should change.
         return rb[first];
     }
 
-    // TODO: When you get to part 5, implement the needed code to support iteration.
     public Iterator<T> iterator() {
         return new ArrayBufferingIterator();
 
@@ -89,7 +82,7 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
         public T next() {
             T returnItem = rb[iterIndex];
             iterIndex = incrementfirst(iterIndex);
-            num ++;
+            num++;
             return returnItem;
         }
     }
@@ -98,18 +91,21 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
         if (index == capacity - 1) {
             return 0;
         }
-        return index += 1;
+        int returnIndex = index + 1;
+        return returnIndex;
     }
     private int decreaseLast(int index) {
         if (index == 0) {
             return capacity - 1;
         }
-        return index - 1;
+        int returnIndex = index - 1;
+        return returnIndex;
     }
     private int incrementfirst(int index) {
         if (index == capacity - 1) {
             return 0;
         }
-        return index += 1;
+        int returnIndex = index + 1;
+        return returnIndex;
     }
 }
