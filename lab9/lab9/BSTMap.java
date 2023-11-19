@@ -18,15 +18,25 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         /* Children of this Node. */
         private Node left;
         private Node right;
+        private boolean color;
 
         private Node(K k, V v) {
             key = k;
             value = v;
         }
+        private Node(K k, V v, Node left, Node right, boolean color) {
+            this.key = k;
+            this.value = v;
+            this.left = left;
+            this.right = right;
+            this.color = color;
+        }
     }
 
     private Node root;  /* Root node of the tree. */
     private int size; /* The number of key-value pairs in the tree */
+    private static boolean RED = true;
+    private static boolean BLACK = false;
 
     /* Creates an empty BSTMap. */
     public BSTMap() {
@@ -44,7 +54,17 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      *  or null if this map contains no mapping for the key.
      */
     private V getHelper(K key, Node p) {
-        throw new UnsupportedOperationException();
+        if (p == null) {
+            return null;
+        }
+        int cmp = key.compareTo(p.key);
+        if (cmp > 0) {
+            return getHelper(key, p.right);
+        }else if (cmp < 0) {
+            return getHelper(key, p.left);
+        }else {
+            return p.value;
+        }
     }
 
     /** Returns the value to which the specified key is mapped, or null if this
@@ -52,14 +72,38 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      */
     @Override
     public V get(K key) {
-        throw new UnsupportedOperationException();
+        if (key == null) {
+            throw new IllegalArgumentException("the argument of get() is null");
+        }
+        return getHelper(key, root);
     }
 
     /** Returns a BSTMap rooted in p with (KEY, VALUE) added as a key-value mapping.
       * Or if p is null, it returns a one node BSTMap containing (KEY, VALUE).
      */
     private Node putHelper(K key, V value, Node p) {
-        throw new UnsupportedOperationException();
+        if (p == null) {
+            return new Node(key, value, null, null, RED);
+        }
+        int cmp = key.compareTo(p.key);
+        if (cmp > 0) {
+            p.right = putHelper(key, value, p.right);
+        }else if (cmp < 0) {
+            p.left = putHelper(key, value, p.left);
+        }else {
+            p.value = value;
+        }
+
+        if (isRed(p.right) && !isRed(p.left)) {
+            p = rotateLeft(p);
+        }
+        if (isRed(p.left) && isRed(p.left.left)) {
+            p = rotateRight(p.left);
+        }
+        if (isRed(p.left) && isRed(p.right)) {
+            flipColors(p);
+        }
+        return p;
     }
 
     /** Inserts the key KEY
@@ -67,15 +111,56 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      */
     @Override
     public void put(K key, V value) {
-        throw new UnsupportedOperationException();
+        root = putHelper(key, value, root);
+        //
+        root.color = BLACK;
+        size++;
     }
 
     /* Returns the number of key-value mappings in this map. */
     @Override
     public int size() {
-        throw new UnsupportedOperationException();
+        return size;
     }
 
+    private boolean isRed(Node x) {
+        if (x == null) {
+            return false;
+        }
+        return x.color == RED;
+    }
+    private void flipColors(Node p) {
+        p.color = RED;
+        p.left.color = BLACK;
+        p.right.color = BLACK;
+    }
+
+    private Node rotateLeft(Node p) {
+        if (p == null || p.right == null) {
+            throw new IllegalArgumentException();
+        }
+        Node temp = p.right;
+        p.right = temp.left;
+        temp.left = p;
+
+        temp.color = BLACK;
+        p.color = RED;
+
+        return temp;
+    }
+    private Node rotateRight(Node p) {
+        if (p == null || p.left == null) {
+            throw new IllegalArgumentException();
+        }
+        Node temp = p.left;
+        p.left = temp.right;
+        temp.right = p;
+
+        temp.color = BLACK;
+        p.color = RED;
+
+        return temp;
+    }
     //////////////// EVERYTHING BELOW THIS LINE IS OPTIONAL ////////////////
 
     /* Returns a Set view of the keys contained in this map. */
