@@ -122,23 +122,19 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
     private void sink(int index) {
         // Throws an exception if index is invalid. DON'T CHANGE THIS LINE.
         validateSinkSwimArg(index);
-
-        if (!inBounds(leftIndex(index)) && !inBounds(rightIndex(index))) {
-            return;
-        }
-
-        int smallerIndex = min(leftIndex(index), rightIndex(index));
-        while (index < size &&
-                (inBounds(leftIndex(index)) || inBounds(rightIndex(index))) &&
-                contents[index].myPriority > contents[smallerIndex].myPriority) {
-            swap(index, smallerIndex);
-            index = smallerIndex;
-            if (!inBounds(leftIndex(index)) && inBounds(rightIndex(index))) {
-                return;
+        while (leftIndex(index) <= size) {
+            int smallerIndex = min(leftIndex(index), rightIndex(index));
+            if (contents[index].myPriority > contents[smallerIndex].myPriority) {
+                swap(index, smallerIndex);
+                index = smallerIndex;
+            } else {
+                break;
             }
-            smallerIndex = min(leftIndex(index), rightIndex(index));
+
         }
-        return;
+
+        
+
     }
 
     /**
@@ -225,17 +221,13 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         if (i > size) {
             return;
         }
-        if (!inBounds(leftIndex(i)) && !inBounds(rightIndex(i))) {
+        if (leftIndex(i) > size) {
             swim(i);
-        }
-
-        if (!inBounds(leftIndex(i)) && !inBounds(rightIndex(i))) {
             return;
-        }
-        int smallerIndex = min(leftIndex(i), rightIndex(i));
-        if (contents[i].myPriority < contents[smallerIndex].myPriority) {
-            sink(i);
-        }
+        } 
+        sink(i);
+
+
         return;
     }
 
