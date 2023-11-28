@@ -228,6 +228,10 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         if (!inBounds(leftIndex(i)) && !inBounds(rightIndex(i))) {
             swim(i);
         }
+
+        if (!inBounds(leftIndex(i)) && !inBounds(rightIndex(i))) {
+            return;
+        }
         int smallerIndex = min(leftIndex(i), rightIndex(i));
         if (contents[i].myPriority < contents[smallerIndex].myPriority) {
             sink(i);
