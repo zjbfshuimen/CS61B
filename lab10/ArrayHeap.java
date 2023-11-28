@@ -133,6 +133,9 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
                 contents[index].myPriority > contents[smallerIndex].myPriority) {
             swap(index, smallerIndex);
             index = smallerIndex;
+            if (!inBounds(leftIndex(index)) && inBounds(rightIndex(index))) {
+                return;
+            }
             smallerIndex = min(leftIndex(index), rightIndex(index));
         }
         return;
