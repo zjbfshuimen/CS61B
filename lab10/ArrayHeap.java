@@ -124,7 +124,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      */
     private void sink(int index) {
         if (!inBounds(index)) {
-            throw new IllegalArgumentException("the node to sink is out of bounds");
+            return;
         }
 
         // Throws an exception if index is invalid. DON'T CHANGE THIS LINE.
