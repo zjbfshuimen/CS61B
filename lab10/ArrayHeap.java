@@ -44,6 +44,9 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      */
     private static int parentIndex(int i) {
         /* TODO: Your code here! */
+        if (i <= 1) {
+            throw new IllegalArgumentException("the node has not parent");
+        }
         return i / 2;
     }
 
@@ -120,8 +123,13 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      * Bubbles down the node currently at the given index.
      */
     private void sink(int index) {
+        if (!inBounds(index)) {
+            throw new IllegalArgumentException("the node to sink is out of bounds");
+        }
+
         // Throws an exception if index is invalid. DON'T CHANGE THIS LINE.
         validateSinkSwimArg(index);
+
         while (leftIndex(index) <= size) {
             int j = leftIndex(index);
             if (j < size && contents[j].myPriority > contents[j + 1].myPriority) {
@@ -219,6 +227,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         if (i > size) {
             return;
         }
+        contents[i].myPriority = priority;
         if (leftIndex(i) > size) {
             swim(i);
             return;
