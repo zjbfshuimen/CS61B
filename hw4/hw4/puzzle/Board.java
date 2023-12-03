@@ -3,14 +3,14 @@ package hw4.puzzle;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Board implements WorldState{
+public class Board implements WorldState {
     private static final int BLANK = 0;
     private int[][] tiles;
     private int size;
     private int estimateDist;
 
     /**
-     * 
+     * initiate the nxn tiles
      */
     public Board(int[][] tiles) {
         if (tiles == null || tiles[0] == null || tiles.length != tiles[0].length) {
@@ -18,7 +18,7 @@ public class Board implements WorldState{
         }
         this.size = tiles.length;
         this.tiles = new int[size][size];
-        estimateDist = - 1;
+        estimateDist = -1;
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 this.tiles[i][j] = tiles[i][j];
@@ -27,7 +27,8 @@ public class Board implements WorldState{
     }
 
     /**
-     * 
+     * if the index i j are valid, return the tiles[i][j]
+     * else throw error
      */
     public int tileAt(int i, int j) {
         if (!inBounds(i) || !inBounds(j)) {
@@ -35,7 +36,7 @@ public class Board implements WorldState{
         }
         return tiles[i][j];
     }
-    private boolean inBounds (int index) {
+    private boolean inBounds(int index) {
         return index >= 0 && index < tiles.length;
     }
 
@@ -82,16 +83,21 @@ public class Board implements WorldState{
     }
 
     /**
-     * 
+     * return the estimateDistanceToGoal
      */
     public int hamming() {
-        int sum = size * size - 1;
+        int sum = 0;
         int legal = 0;
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                if (tiles[i][j] != BLANK && tiles[i][j] == size * (i - 1) + j) {
-                    legal++;
+                if (tiles[i][j] == BLANK) {
+                    continue;
                 }
+                if (i * size + j != tiles[i][j] - 1) {
+                    sum++;
+                }
+
+
             }
         }
         return sum - legal;
@@ -99,7 +105,7 @@ public class Board implements WorldState{
     }
 
     /**
-     * 
+     * return the estimateDistanceToGoal
      */
     public int manhattan() {
         int sum = 0;
@@ -131,7 +137,7 @@ public class Board implements WorldState{
         if (this == y) {
             return true;
         }
-        if (this.getClass() != y.getClass()) {
+        if (y == null || this.getClass() != y.getClass()) {
             return false;
         }
         Board other = (Board) y;
@@ -158,12 +164,17 @@ public class Board implements WorldState{
         s.append(N + "\n");
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                s.append(String.format("%2d ", tileAt(i,j)));
+                s.append(String.format("%2d ", tileAt(i, j)));
             }
             s.append("\n");
         }
         s.append("\n");
         return s.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
 }

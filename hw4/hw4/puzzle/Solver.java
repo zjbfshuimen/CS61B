@@ -1,6 +1,5 @@
 package hw4.puzzle;
 
-import edu.princeton.cs.algs4.IndexMinPQ;
 import edu.princeton.cs.algs4.MinPQ;
 
 import java.util.*;
@@ -8,7 +7,7 @@ import java.util.*;
 public class Solver {
 
     private MinPQ<SearchNode> pq;
-    private List<WorldState> Solutions;
+    private List<WorldState> solution;
     private int totMoves;
 
     public Solver(WorldState inoitial) {
@@ -16,7 +15,7 @@ public class Solver {
         pq.insert(new SearchNode(inoitial, 0, null));
         while (true) {
             SearchNode node = pq.delMin();
-            if (node.curr.isGoal()){
+            if (node.curr.isGoal()) {
                 getAnswer(node);
                 break;
             } else {
@@ -27,15 +26,14 @@ public class Solver {
                     }
                 }
             }
-
         }
     }
     private void getAnswer(SearchNode node) {
         totMoves = node.distSoFar;
-        Solutions = new ArrayList<>();
+        solution = new ArrayList<>();
         SearchNode p = node;
         while (p != null) {
-            Solutions.add(p.curr);
+            solution.add(p.curr);
             p = p.prev;
         }
     }
@@ -46,10 +44,10 @@ public class Solver {
     }
 
     public Iterable<WorldState> solution() {
-        return Solutions;
+        return solution;
     }
     private Deque<SearchNode> worlds;
-    private class SearchNode implements Comparable<SearchNode>{
+    private class SearchNode implements Comparable<SearchNode> {
         WorldState curr;
         int distSoFar;
         SearchNode prev;
