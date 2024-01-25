@@ -2,10 +2,12 @@ package byog.Core;
 
 import edu.princeton.cs.algs4.StdDraw;
 
+import java.awt.*;
 import java.util.Random;
 
 
 public class testDraw {
+    Point p = new Point(2, 4);
 
 
     private static final long SEED = 2873123;

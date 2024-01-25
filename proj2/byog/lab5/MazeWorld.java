@@ -4,10 +4,13 @@ import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
+import java.awt.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Random;
 
 public class MazeWorld {
-    private static final long seed = 880979938;
+    private static final long seed = 8879938;
     private static final Random RANDOM = new Random(seed);
     private static final int WIDTH = 81;
     private static final int HEIGHT = 31;
@@ -21,8 +24,152 @@ public class MazeWorld {
 
         initialization(world);
         iterateWithRandom(world);
+        reinitializeWithOneZero(world);
+
+//        findPath(world);
 
         ter.renderFrame(world);
+    }
+
+    /**
+     * find a connected path in the rest 0 and 1
+     * which are NOTHING and SAND
+     */
+    public static void findPath(TETile[][] world) {
+        Point starter = findFirst(world);
+        connectAPath(world, starter);
+
+
+    }
+    /**
+     * return a Point as the starter;
+     */
+    private static Point findFirst(TETile[][] world) {
+        int i, j;
+        for (i = 1; i < WIDTH; i += 2) {
+            for (j = 1; j < HEIGHT; j += 2) {
+                if (world[i][j] == Tileset.SAND) {
+                    return new Point(i, j);
+                }
+            }
+        }
+        return null;
+    }
+
+    public static void connectAPath(TETile[][] world, Point pos) {
+        Deque<Point> chosen = new ArrayDeque<>();
+        Point sourddending;
+        boolean haveSANDAround = haveRoadToGo(world, pos);
+
+        // base case:
+        if (!haveSANDAround) {
+            chosen.pollLast();
+            return;
+        }
+        // chose
+
+            sourddending = returnASurround(world, pos);
+            chosen.addLast(sourddending);
+
+            connect(world, pos, sourddending);
+            connectAPath(world, sourddending);
+        // explore
+
+        // un choose
+    }
+
+    /**
+     * change the given two SAND to MOUNTAIN
+     */
+    public static void connect(TETile[][] world, Point starter, Point toConnected) {
+        world[starter.x][starter.y] = Tileset.MOUNTAIN;
+        world[toConnected.x][toConnected.y] = Tileset.MOUNTAIN;
+        world[(starter.x + toConnected.x) / 2][(starter.y + toConnected.y) / 2] = Tileset.MOUNTAIN;
+    }
+
+    /**
+     * Return a valid surround of the given pos where the value is SAND
+     * although default is return null, using haveWayToGo before returnASurround
+     */
+    public static Point returnASurround(TETile[][] world, Point pos) {
+        int r = RANDOM.nextInt(4);
+        Point returnPoint = new Point();
+        Point left = new Point(pos.x - 2, pos.y);
+        Point right = new Point(pos.x + 2, pos.y);
+        Point top = new Point(pos.x, pos.y + 2);
+        Point bottom = new Point(pos.x, pos.y - 2);
+
+        // 返回一个有效的随机方位
+        while (true) {
+            switch (r) {
+                case 0:
+                    if (isSAND(world, left)) {
+                        return left;
+                    }
+                    break;
+                case 1:
+                    if (isSAND(world, right)) {
+                        return right;
+                    }
+                    break;
+                case 2:
+                    if (isSAND(world, top)) {
+                        return top;
+                    }
+                    break;
+                case 3:
+                    if (isSAND(world, bottom)) {
+                        return bottom;
+                    }
+                    break;
+                default: return null;
+            }
+        }
+    }
+
+    /**
+     *  Check if there is SAND around given Point
+     *  if so, return true
+     */
+    public static boolean haveRoadToGo(TETile[][] world, Point pos) {
+        boolean haveRestSAND = false;
+        haveRestSAND = isSAND(world, new Point(pos.x - 2, pos.y)) || isSAND(world, new Point(pos.x + 2, pos.y)) ||
+                isSAND(world, new Point(pos.x, pos.y - 2)) || isSAND(world, new Point(pos.x, pos.y + 2));
+
+        return haveRestSAND;
+    }
+
+    /**
+     *  Check if the given pos is a SAND and by the way check if the pos is valid
+     *  else return false
+     */
+    public static boolean isSAND(TETile[][] world, Point pos) {
+        if (pos.x >= 0 && pos.x <= WIDTH && pos.y >= 0 && pos.y <= HEIGHT) {
+            return world[pos.x][pos.y] == Tileset.SAND;
+        }
+        return false;
+    }
+
+    /**
+     *  Check if the given Point is out of bounds
+     */
+    public static boolean isOutOfBounds(Point pos) {
+        return pos.x < 0 || pos.x > WIDTH || pos.y < 0 || pos.y > HEIGHT;
+
+    }
+
+    /**
+     * after random setting rectangle and corner, fill the rest of the world with SAND in odd entry
+     * which is, SAND
+     */
+    public static void reinitializeWithOneZero(TETile[][] world) {
+        for (int i = 1; i < WIDTH; i += 2) {
+            for (int j = 1; j < HEIGHT; j += 2) {
+                if (world[i][j] != Tileset.GRASS) {
+                    world[i][j] = Tileset.SAND;
+                }
+            }
+        }
     }
 
     /**
